@@ -32,8 +32,6 @@ PatternWithoutRange :
 ### 匹配模式介绍
 匹配模式分为两种: **范围模式**, **非范围模式**.
 
-#### 非范围模式
-
 #### 范围模式
 范围模式使用`..`和`..=`运算符来标识边界条件;在运算符左侧代表下界,右侧代表上界,`..`为右侧开区间,`..=`为右侧闭区间,一侧为空代表无限.
 
@@ -41,24 +39,53 @@ PatternWithoutRange :
 ```rust,edition2024
 # #![allow(warnings)]
 #fn main() {
+    //integer
     let tar1 = 0;
     match tar1 {
-        ..-1 => {},
-        -1..2 => {},
-        2..=4 => {},
-        4.. => {},
+        ..-1 => { println!("{}<-1", tar1); },
+        -1..=2 => { println!("-1<={}<=2", tar1); },
+        2..4 => { println!("2<={}<4", tar1); },
+        4.. => { println!("4<={}", tar1); },
     }
     
+    //float
     let tar2 = 0.0;
     match tar2 {
-        ..-1.0 => {},
-        -1.0..2.0 => {},
-        2.0..=4.0 => {},
-        4.0.. => {},
-        _ => {},
+        ..-1.0 => { println!("{}<-1", tar2); },
+        -1.0..=2.0 => { println!("-1<={}<=2", tar2); },
+        2.0..4.0 => { println!("2<={}<4", tar2); },
+        4.0.. => { println!("4<={}", tar2); },
+        _ => { println!("nan"); },
     }
+    
+    //char,single Unicode character
+    let tar3 = '卍';
+    match tar3 {
+        'A'..='f' => { println!("a<={}<=f", tar3); },
+        'g'.. => { println!("g<={}", tar3); },
+        _ => { println!("{}<a", tar3); }
+    }
+    //byte,just like char,but ASCII character
 #}
 
+```
+
+#### 非范围模式
+非范围模式包括:
+- 字面量
+- 标识符
+- 通配符
+- rest模式
+- 引用
+- 结构体
+- 元组
+- 切片
+
+```rust,edition2024
+# #![allow(warnings)]
+#fn main() {
+    
+#}
 ```
 
 ### 使用方式
