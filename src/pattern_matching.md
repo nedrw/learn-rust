@@ -73,9 +73,61 @@ PatternWithoutRange :
 #### 非范围模式
 非范围模式包括:
 - 字面量
+
+    即0,1.1,'a',true等字面量
+    ```rust,edition2024
+    # #![allow(warnings)]
+    #fn main() {
+        let (x, y, z, u) = (1, 2.0, 'a', false); // 声明初始化中的类型匹配
+        println!("{},{},{},{}",x,y,z,u);
+    #}
+    ```
 - 标识符
+    
+    `ref? mut? IDENTIFIER (@ SubPattern) ?`
+    
+    即各种变量,允许添加**ref**,**mut**前缀以匹配引用和可变变量,可以后接`@`运算符匹配子模式
+    ```rust,edition2024
+    # #![allow(warnings)]
+    #fn main() {
+        let x = &2;
+        match x {
+            ref e @ 1 ..= 5 => println!("element {}", e),
+            _ => println!("anything"),
+        }
+    #}
+    ```
 - 通配符
+
+    即`_`,可以匹配任意条件
+    ```rust,edition2024
+    # #![allow(warnings)]
+    #fn main() {
+        let x = 1;
+        match x {
+            2 => { println!("match {}", x); },
+            _ => { println!("match {}", x); },
+        }
+    #}
+    ```
 - rest模式
+
+    用于 **切片**, **tuple**, **tuple struct**的匹配条件中,可以匹配零到多个变量.
+    ```rust,edition2024,editable
+    # #![allow(warnings)]
+    #fn main() {
+        let words = vec!["a", "b", "c", "d", "e"];
+        let slice = &words[..];
+        match slice {
+            [] => println!("slice is empty"),
+            [one] => println!("single element {}", one),
+            // 以下三行可以轮流注释,运行,看看输出
+            [head, tail @ ..] => println!("{} {:?}", head, tail),
+            [start @ .., "e"] => println!("{:?}", start),
+            [start, .., end] => println!("{} {}", start, end),
+        }
+    #}
+    ```
 - 引用
 - 结构体
 - 元组
