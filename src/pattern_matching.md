@@ -129,16 +129,76 @@ PatternWithoutRange :
     #}
     ```
 - 引用
+
+    ` (&|&&) mut? PatternWithoutRange`
+    与标识符模式类似,不过匹配的是变量引用,即借用匹配对象
+    ```rust,edition2024
+    # #![allow(warnings)]
+    #fn main() {
+        let int_reference = &3;
+        // 下面的两个匹配是等价的
+        let a = match *int_reference { 0 => "zero", _ => "some" };
+        let b = match int_reference { &0 => "zero", _ => "some" };
+    #}
+    ```
 - 结构体
+    
+    可以匹配**struct**,**tuple struct**,**enum**,**union**等结构.多用于解构结构,提取参数.同时内部结构支持子模式匹配.
+    ```rust,edition2024,editable
+    # #![allow(warnings)]
+    #struct AStruct { x:i32, y:i32 }
+    #struct ATupleStruct (i32, i32, i32);
+    #enum AEnum { E1, E2, E3(i32,i32) }
+    #fn main() {
+        let a_s = AStruct { x:1, y:2 };
+        match a_s {
+            AStruct { x: 10, y: 20 } => println!("10, 20"),//匹配子模式
+            AStruct { y: 10, x: 20 } => println!("20, 10"),//顺序无所谓
+            AStruct { x: 10, .. } => println!("x is 10"),
+            AStruct { x, y } => println!("x: {}, y: {}", x, y),
+        }
+        
+        let a_ts = ATupleStruct(1,2,3);
+        let ATupleStruct(x,y,z) = a_ts;
+        println!("{},{},{}", x, y, z);
+        
+        let a_e = AEnum::E3(1,2);
+        match a_e {
+            AEnum::E1 => println!("E1"),
+            AEnum::E2 => println!("E2"),
+            AEnum::E3(1, ..) => println!("1,.."),
+            AEnum::E3(..) => println!("E3"),
+        }
+    #}
+    ```
 - 元组
+
+    **tuple**模式与**tuple struct**模式类似.支持内部子模式匹配.
+    ```rust,edition2024,editable
+    # #![allow(warnings)]
+    #fn main() {
+        let pair = (10, 1.0, "ten");
+        let (a, b, c) = pair;
+        match pair {
+            (1, x, y) => println!("{},{}",x,y),
+            (8, ..) => println!("(8,xx,xx)"),
+            (x, 1.0, ..) => println!("(xx,1.0,xx)"),
+            _ => println!("_"),
+        }
+    #}
+    ```
 - 切片
 
-```rust,edition2024
-# #![allow(warnings)]
-#fn main() {
-    
-#}
-```
+    ```rust,edition2024,editable
+    # #![allow(warnings)]
+    #fn main() {
+        let arr = [3, 2, 1];
+        match arr {
+            [1, _, _] => println!("1,xx,xx"),
+            [a, b, c] => println!("{},{},{}",a,b,c),
+        }
+    #}
+    ```
 
 ### 使用方式
 模式匹配的使用方式分为六种: **let**, **if let**, **while let**, **match**, **方法参数**, **for**.
@@ -165,8 +225,8 @@ fn option_some() -> Option<i32> { Some(1) }
 fn option_none() -> Option<i32> { None }
 fn main() {
     // if let PATTERN = VALUE {}
-    if let Some(x) = option_some() { println!("match some {}", x); } // print 1
-    if let Some(x) = option_none() { println!("match none {}", x); } // no print
+    if let Some(x) = option_some() println!("match some {}", x), // print 1
+    if let Some(x) = option_none() println!("match none {}", x), // no print
 }
 ```
 
@@ -196,9 +256,9 @@ fn main() {
     //}
     let x = 1;
     match (x, 3) {
-        (2, 3) | (6, 3) => { println!("{}", x); },
-        (3..=5, 3) => { println!("{}", x); }, // range pattern
-        _ => { println!("{}", x); },
+        (2, 3) | (6, 3) => println!("{}", x),
+        (3..=5, 3) => println!("{}", x), // range pattern
+        _ => println!("{}", x),
     }
 #}
 ```
