@@ -5,5 +5,13 @@ multilingual = false
 src = "src"
 title = "learn_rust"
 
+[output.html]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
+
 [output.html.playground]
 editable = true
+
+[preprocessor]
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
