@@ -9,3 +9,4 @@
 # [好文精读](./indepth_reading/explanation.md)
 - [如何理解Send和Sync的含义](./indepth_reading/this-sendsync-secret-separates-professional-and-amateur.md)
 - [零成本抽象不代表自动性能优化](./indepth_reading/compiler-vectorization-hidden.md)
+- [LLVM 自动向量化深度解析](./indepth_reading/llvm-auto-vectorization.md)
